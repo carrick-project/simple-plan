@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics="">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&amp;family=Architects+Daughter&amp;display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#f0eee9;font-family:'Patrick Hand',cursive}
+  .dv-turn{padding:40px 44px 60px;border-bottom:1px solid rgba(0,0,0,.08)}
+  .dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 22px}
+  .dv-tid{font:600 11px ui-monospace,Menlo,monospace;padding:3px 8px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+  .dv-tname{font:600 16px 'Patrick Hand',cursive;color:#1a1a1a}
+  .dv-group{margin-bottom:30px}
+  .dv-glabel{font:16px 'Patrick Hand',cursive;color:rgba(0,0,0,.55);margin-bottom:10px}
+  .dv-opts{display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start}
+  .dv-opt{flex:none;display:flex;flex-direction:column;gap:9px}
+  .dv-oid{font:700 12px ui-monospace,Menlo,monospace;padding:3px 8px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}
+  .dv-olabel{display:flex;align-items:baseline;gap:8px;font:15px 'Patrick Hand',cursive;color:rgba(0,0,0,.6)}
+  .phone{width:300px;background:#fff;border:2.5px solid #1a1a1a;border-radius:22px;padding:14px 12px;box-shadow:3px 3px 0 rgba(0,0,0,.9)}
+  .dv-opt:target .dv-oid{background:#c0392b;color:#fff}
+  .dv-next{margin:26px 0 0;font:15px/1.5 'Patrick Hand',cursive;color:rgba(0,0,0,.55);max-width:640px}
+  .sk-line{border-bottom:2px solid #1a1a1a}
+  .sk-dash{border-bottom:2px dashed #1a1a1a}
+  .chk{width:18px;height:18px;border:2px solid #1a1a1a;border-radius:3px;flex:none}
+  .chk.on{background:#c0392b;border-color:#c0392b}
+  .tag{border:1.5px solid #1a1a1a;border-radius:10px;padding:2px 8px;font-size:11px}
+  .navbar{display:flex;justify-content:space-around;border-top:2px solid #1a1a1a;padding-top:8px;margin-top:10px}
+  .navitem{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px}
+  .navicon{width:20px;height:20px;border:2px solid #1a1a1a;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .status{display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px;opacity:.6}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Planner app — first wireframe pass (mobile)</span></div>
+
+  <div class="dv-group">
+    <div class="dv-glabel">Today / Home dashboard</div>
+    <div class="dv-opts">
+
+      <div class="dv-opt" id="1a">
+        <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Single-scroll agenda</div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>◉ ▬ 100%</span></div>
+          <div style="font-size:22px;font-weight:bold;margin-bottom:2px">Tue, Jul 14</div>
+          <div style="font-size:13px;opacity:.6;margin-bottom:14px">3 tasks · 2 habits left</div>
+
+          <div style="font-size:14px;margin-bottom:6px;opacity:.7">HABITS</div>
+          <div style="display:flex;gap:10px;margin-bottom:16px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div class="chk on"></div><span style="font-size:10px">Water</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div class="chk"></div><span style="font-size:10px">Read</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div class="chk"></div><span style="font-size:10px">Gym</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.4"><div class="chk" style="border-style:dashed"></div><span style="font-size:10px">+</span></div>
+          </div>
+
+          <div style="font-size:14px;margin-bottom:6px;opacity:.7">TASKS</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:8px" class="sk-dash"><div class="chk"></div><span style="flex:1">Send Q3 report</span><span class="tag">2pm</span></div>
+            <div style="display:flex;align-items:center;gap:8px" class="sk-dash"><div class="chk on"></div><span style="flex:1;text-decoration:line-through;opacity:.5">Team standup</span></div>
+          </div>
+          
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:8px" class="sk-dash"><div class="chk"></div><span style="flex:1">Book dentist</span></div>
+          </div>
+
+          <div style="font-size:14px;margin-bottom:6px;opacity:.7">TOP GOAL</div>
+          <div class="sk-line" style="padding-bottom:10px;font-size:13px">▬▬▬▬▬▬▬▬░░ Launch side project</div>
+
+          <div class="navbar">
+            <div class="navitem"><div class="navicon">☉</div>Today</div>
+            <div class="navitem"><div class="navicon">✓</div>Tasks</div>
+            <div class="navitem"><div class="navicon">↻</div>Habits</div>
+            <div class="navitem"><div class="navicon">▦</div>Calendar</div>
+            <div class="navitem"><div class="navicon">✎</div>Notes</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="dv-group">
+    <div class="dv-glabel">Other screens (paired with <a class="dv-oid" href="#1a">1a</a> style — will match whichever direction you pick)</div>
+    <div class="dv-opts">
+
+      <div class="dv-opt" id="1d">
+        <div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Task list + add</div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>◉ ▬ 100%</span></div>
+          <div style="font-size:20px;font-weight:bold;margin-bottom:12px">Tasks</div>
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+            <sc-for list="{{ taskDays }}" as="day" hint-placeholder-count="7">
+              <div class="tag" style="{{ day.style }}">{{ day.label }}</div>
+            </sc-for>
+          </div>
+          
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;font-size:13px">
+            <div class="sk-dash" style="display:flex;gap:8px"><div class="chk"></div><span style="flex:1">Send Q3 report</span><span class="tag">2pm</span></div>
+            <div class="sk-dash" style="display:flex;gap:8px"><div class="chk on"></div><span style="flex:1;text-decoration:line-through;opacity:.5">Team standup</span></div>
+          </div>
+          
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+            <div class="sk-dash" style="display:flex;gap:8px"><div class="chk"></div><span style="flex:1">Book dentist</span></div>
+          </div>
+          <div style="margin-top:16px;text-align:center;border:2px dashed #1a1a1a;border-radius:10px;padding:8px;font-size:12px;opacity:.6">+ Add task</div>
+          <div class="navbar">
+            <div class="navitem"><div class="navicon">☉</div>Today</div>
+            <div class="navitem"><div class="navicon" style="border-color:#c0392b;color:#c0392b">✓</div>Tasks</div>
+            <div class="navitem"><div class="navicon">↻</div>Habits</div>
+            <div class="navitem"><div class="navicon">▦</div>Calendar</div>
+            <div class="navitem"><div class="navicon">✎</div>Notes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-opt" id="1e">
+        <div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Habit tracker</div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>◉ ▬ 100%</span></div>
+          <div style="font-size:20px;font-weight:bold;margin-bottom:14px">Habits</div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><b>Water</b><span style="opacity:.5">5-day streak</span></div>
+              <div style="display:flex;gap:5px">
+                <div class="chk on"></div><div class="chk on"></div><div class="chk on"></div><div class="chk on"></div><div class="chk on"></div><div class="chk"></div><div class="chk" style="opacity:.3"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><b>Read</b><span style="opacity:.5">2-day streak</span></div>
+              <div style="display:flex;gap:5px">
+                <div class="chk"></div><div class="chk"></div><div class="chk"></div><div class="chk on"></div><div class="chk on"></div><div class="chk"></div><div class="chk" style="opacity:.3"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><b>Gym</b><span style="opacity:.5">0-day streak</span></div>
+              <div style="display:flex;gap:5px">
+                <div class="chk"></div><div class="chk"></div><div class="chk"></div><div class="chk"></div><div class="chk"></div><div class="chk"></div><div class="chk" style="opacity:.3"></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:16px;text-align:center;border:2px dashed #1a1a1a;border-radius:10px;padding:8px;font-size:12px;opacity:.6">+ New habit</div>
+          <div class="navbar">
+            <div class="navitem"><div class="navicon">☉</div>Today</div>
+            <div class="navitem"><div class="navicon">✓</div>Tasks</div>
+            <div class="navitem"><div class="navicon" style="border-color:#c0392b;color:#c0392b">↻</div>Habits</div>
+            <div class="navitem"><div class="navicon">▦</div>Calendar</div>
+            <div class="navitem"><div class="navicon">✎</div>Notes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-opt" id="1f">
+        <div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>Calendar (month)</div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>◉ ▬ 100%</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <span style="font-size:20px;font-weight:bold">July 2026</span><span style="font-size:16px">‹ ›</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:11px;text-align:center;margin-bottom:4px;opacity:.6">
+            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;font-size:12px;text-align:center">
+            <span></span><span></span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span>
+            <span>13</span><span style="border:2px solid #c0392b;border-radius:5px">14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span>
+          </div>
+          <div style="margin-top:14px;font-size:13px;opacity:.7;margin-bottom:6px">Jul 14 — agenda</div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+            <div class="sk-dash">2pm — Send Q3 report</div>
+            <div class="sk-dash">6pm — Gym habit</div>
+          </div>
+          <div class="navbar">
+            <div class="navitem"><div class="navicon">☉</div>Today</div>
+            <div class="navitem"><div class="navicon">✓</div>Tasks</div>
+            <div class="navitem"><div class="navicon">↻</div>Habits</div>
+            <div class="navitem" style="color:#c0392b"><div class="navicon" style="border-color:#c0392b;color:#c0392b">▦</div>Calendar</div>
+            <div class="navitem"><div class="navicon">✎</div>Notes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-opt" id="1g">
+        <div class="dv-olabel"><a class="dv-oid" href="#1g">1g</a>Settings</div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>◉ ▬ 100%</span></div>
+          <div style="font-size:20px;font-weight:bold;margin-bottom:14px">Settings</div>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+            <div class="sk-dash" style="padding-bottom:8px;display:flex;justify-content:space-between">Name<span>Carrick ›</span></div>
+            <div class="sk-dash" style="padding-bottom:8px;display:flex;justify-content:space-between">Theme<span>Light ›</span></div>
+            <div class="sk-dash" style="padding-bottom:8px;display:flex;justify-content:space-between">Week starts on<span>Monday ›</span></div>
+            <div class="sk-dash" style="padding-bottom:8px;display:flex;justify-content:space-between">Reminders<span class="chk on" style="border-radius:9px"></span></div>
+            <div class="sk-dash" style="padding-bottom:8px;display:flex;justify-content:space-between">Export data<span>›</span></div>
+          </div>
+          <div class="navbar">
+            <div class="navitem"><div class="navicon">☉</div>Today</div>
+            <div class="navitem"><div class="navicon">✓</div>Tasks</div>
+            <div class="navitem"><div class="navicon">↻</div>Habits</div>
+            <div class="navitem"><div class="navicon">▦</div>Calendar</div>
+            <div class="navitem"><div class="navicon">✎</div>Notes</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="dv-group">
+    <div class="dv-glabel">Notes — for things to consider / brainstorm / ideas</div>
+    <div class="dv-opts">
+
+      <div class="dv-opt" id="1h">
+        <div class="dv-olabel"><a class="dv-oid" href="#1h">1h</a>Notes list</div>
+        <div class="phone">
+          <div class="status"><span>9:41</span><span>◉ ▬ 100%</span></div>
+          <div style="font-size:20px;font-weight:bold;margin-bottom:12px">Notes</div>
+          <div style="font-size:12px;opacity:.55;margin-bottom:14px">Ideas, things to consider, loose thoughts</div>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+            <div class="sk-dash" style="padding-bottom:8px"><b>Side project name ideas</b><div style="opacity:.6;font-size:11px">Jul 12</div></div>
+            <div class="sk-dash" style="padding-bottom:8px"><b>Book recs from Sam</b><div style="opacity:.6;font-size:11px">Jul 10</div></div>
+            <div class="sk-dash" style="padding-bottom:8px"><b>Maybe try a new gym schedule</b><div style="opacity:.6;font-size:11px">Jul 8</div></div>
+          </div>
+          <div style="margin-top:16px;text-align:center;border:2px dashed #1a1a1a;border-radius:10px;padding:8px;font-size:12px;opacity:.6">+ Add note</div>
+          <div class="navbar">
+            <div class="navitem"><div class="navicon">☉</div>Today</div>
+            <div class="navitem"><div class="navicon">✓</div>Tasks</div>
+            <div class="navitem"><div class="navicon">↻</div>Habits</div>
+            <div class="navitem"><div class="navicon">▦</div>Calendar</div>
+            <div class="navitem" style="color:#c0392b"><div class="navicon" style="border-color:#c0392b;color:#c0392b">✎</div>Notes</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="dv-next">Try next: "go with <a class="dv-oid" href="#1a">1a</a>, build it in the Modernist system" · "combine <a class="dv-oid" href="#1c">1c</a>'s week strip with <a class="dv-oid" href="#1a">1a</a>'s grouped tasks" · "show a 4th direction with time-blocking"</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showWeekend&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;1d Task list&quot;}, &quot;activeDay&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;Mon&quot;,&quot;Tue&quot;,&quot;Wed&quot;,&quot;Thu&quot;,&quot;Fri&quot;,&quot;Sat&quot;,&quot;Sun&quot;], &quot;default&quot;: &quot;Mon&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;1d Task list&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const showWeekend = this.props.showWeekend ?? true;
+    const activeDay = this.props.activeDay ?? 'Mon';
+    const labels = ['Mon','Tue','Wed','Thu','Fri'].concat(showWeekend ? ['Sat','Sun'] : []);
+    const taskDays = labels.map(label => ({
+      label,
+      style: label === activeDay ? 'background:#1a1a1a;color:#fff' : ''
+    }));
+    return { taskDays };
+  }
+}
+</script>
+</body>
+</html>
