@@ -1,0 +1,332 @@
+/* App layer — layout and small components not covered by the Modernist
+   component set (checkboxes, bottom nav, day chips, streak dots, calendar
+   grid). Built entirely from Modernist tokens; no new colors/spacing. */
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  overscroll-behavior-y: none;
+}
+
+.app-shell {
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  border-left: 1px solid var(--color-divider);
+  border-right: 1px solid var(--color-divider);
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-bottom: 2px solid var(--color-divider);
+  background: var(--color-bg);
+}
+
+.app-header h1 {
+  font-size: 25px;
+  margin: 0;
+}
+
+.app-header-meta {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  margin-top: 2px;
+}
+
+.app-main {
+  flex: 1;
+  padding: var(--space-4);
+  padding-bottom: var(--space-8);
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+.icon-btn:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.icon-btn:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
+.icon-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+/* — bottom nav — */
+.bottom-nav {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: space-around;
+  border-top: 2px solid var(--color-divider);
+  background: var(--color-bg);
+  padding: var(--space-2) 0 max(var(--space-2), env(safe-area-inset-bottom));
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: var(--space-1) var(--space-2);
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  cursor: pointer;
+}
+.nav-btn:hover { color: var(--color-text); }
+.nav-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.nav-btn[aria-current='page'] { color: var(--color-accent); }
+.nav-btn svg { display: block; }
+
+/* — section labels — */
+.section-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  margin: 0 0 var(--space-2);
+}
+.section + .section { margin-top: var(--space-6); }
+
+/* — checkbox — */
+.checkbox {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-bg);
+  cursor: pointer;
+  padding: 0;
+}
+.checkbox:hover { border-color: var(--color-accent); }
+.checkbox:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.checkbox.on { background: var(--color-accent); border-color: var(--color-accent); }
+.checkbox.round { border-radius: 50%; }
+
+/* — rows — */
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-divider);
+}
+.row:last-child { border-bottom: none; }
+.row-title { flex: 1; font-size: 14px; }
+.row-title.done { text-decoration: line-through; opacity: 0.5; }
+.row-sub { font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+
+/* — habits: horizontal quick-check strip (Today) — */
+.habit-strip { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+.habit-strip-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+}
+
+/* — habit streak row (Habits screen) — */
+.streak-row { display: flex; gap: 5px; }
+.streak-dot {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.streak-dot:hover { border-color: var(--color-accent); }
+.streak-dot.on { background: var(--color-accent); border-color: var(--color-accent); }
+.streak-dot.future { opacity: 0.35; cursor: default; }
+.streak-dot.today { border-color: var(--color-text); }
+
+/* — day chips (Tasks) — */
+.chip-row { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+.day-chip-row { display: flex; gap: 5px; flex-wrap: nowrap; overflow-x: auto; }
+.day-chip {
+  flex: 1 0 auto;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  padding: 5px 8px;
+  font-size: 11px;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: var(--font-body);
+  white-space: nowrap;
+}
+.day-chip:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.day-chip.active { background: var(--color-text); border-color: var(--color-text); color: var(--color-bg); }
+
+/* — dashed add row — */
+.add-row {
+  margin-top: var(--space-4);
+  text-align: left;
+  border: 2px dashed var(--color-divider);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  font-size: 13px;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  background: transparent;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.add-row:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.add-row:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+.add-form {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-divider);
+  background: var(--color-surface);
+}
+.add-form-actions { display: flex; justify-content: flex-end; gap: var(--space-2); }
+
+/* — goal bar — */
+.goal-track {
+  height: 8px;
+  background: var(--color-neutral-200);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+.goal-fill { height: 100%; background: var(--color-accent); }
+
+/* — calendar — */
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-dow {
+  text-align: center;
+  font-size: 11px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+  padding-bottom: var(--space-2);
+}
+.cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: var(--font-body);
+  position: relative;
+}
+.cal-cell:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.cal-cell.empty { cursor: default; }
+.cal-cell.today { border-color: var(--color-text); }
+.cal-cell.selected { background: var(--color-accent); color: var(--color-bg); }
+.cal-cell .dot {
+  position: absolute;
+  bottom: 3px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+.cal-cell.selected .dot { background: var(--color-bg); }
+
+/* — notes — */
+.note-card {
+  border-bottom: 1px solid var(--color-divider);
+  padding: var(--space-3) 0;
+  cursor: pointer;
+}
+.note-card:last-child { border-bottom: none; }
+.note-title { font-family: var(--font-heading); font-weight: 600; font-size: 15px; }
+.note-date { font-size: 11px; color: color-mix(in srgb, var(--color-text) 55%, transparent); margin-top: 2px; }
+.note-body { font-size: 13px; margin-top: var(--space-2); opacity: 0.85; white-space: pre-wrap; }
+
+/* — settings — */
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-divider);
+  font-size: 14px;
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row-value {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+
+/* — toggle switch — */
+.switch {
+  width: 38px;
+  height: 22px;
+  border: 2px solid var(--color-divider);
+  border-radius: 999px;
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  flex: none;
+}
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-text);
+  transition: transform 0.12s ease;
+}
+.switch.on { background: var(--color-accent); border-color: var(--color-accent); }
+.switch.on::after { background: var(--color-bg); transform: translateX(16px); }
+
+.empty-state {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--color-text) 50%, transparent);
+  padding: var(--space-4) 0;
+}
