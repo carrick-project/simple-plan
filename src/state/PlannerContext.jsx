@@ -91,25 +91,8 @@ export function PlannerProvider({ children }) {
     reminders: true,
   }));
 
-  const value = useMemo(() => ({
-    tasks,
-    habits,
-    notes,
-    settings,
-    topGoal: TOP_GOAL,
-
-    toggleTask(id) {
-      setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
-    },
-    addTask({ title, category, day, time }) {
-      if (!title.trim()) return;
-      setTasks((prev) => [
-        ...prev,
-        { id: `task-${Date.now()}`, title: title.trim(), category: category || 'Personal', day, time: time || null, done: false },
-      ]);
-    },
-
-    toggleHabitDay(habitId, dayIdx) {
+  const value = useMemo(() => {
+    function toggleHabitDay(habitId, dayIdx) {
       if (dayIdx > todayDayIndex()) return;
       setHabits((prev) => prev.map((h) => {
         if (h.id !== habitId) return h;
@@ -117,27 +100,48 @@ export function PlannerProvider({ children }) {
         log[dayIdx] = !log[dayIdx];
         return { ...h, log };
       }));
-    },
-    toggleHabitToday(habitId) {
-      this.toggleHabitDay(habitId, todayDayIndex());
-    },
-    addHabit({ name }) {
-      if (!name.trim()) return;
-      setHabits((prev) => [...prev, { id: `habit-${Date.now()}`, name: name.trim(), log: DAYS.map(() => false) }]);
-    },
+    }
 
-    addNote({ title, body }) {
-      if (!title.trim()) return;
-      setNotes((prev) => [
-        { id: `note-${Date.now()}`, title: title.trim(), body: body.trim(), date: new Date().toISOString() },
-        ...prev,
-      ]);
-    },
+    return {
+      tasks,
+      habits,
+      notes,
+      settings,
+      topGoal: TOP_GOAL,
 
-    updateSettings(patch) {
-      setSettings((prev) => ({ ...prev, ...patch }));
-    },
-  }), [tasks, habits, notes, settings]);
+      toggleTask(id) {
+        setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+      },
+      addTask({ title, category, day, time }) {
+        if (!title.trim()) return;
+        setTasks((prev) => [
+          ...prev,
+          { id: `task-${Date.now()}`, title: title.trim(), category: category || 'Personal', day, time: time || null, done: false },
+        ]);
+      },
+
+      toggleHabitDay,
+      toggleHabitToday(habitId) {
+        toggleHabitDay(habitId, todayDayIndex());
+      },
+      addHabit({ name }) {
+        if (!name.trim()) return;
+        setHabits((prev) => [...prev, { id: `habit-${Date.now()}`, name: name.trim(), log: DAYS.map(() => false) }]);
+      },
+
+      addNote({ title, body }) {
+        if (!title.trim()) return;
+        setNotes((prev) => [
+          { id: `note-${Date.now()}`, title: title.trim(), body: body.trim(), date: new Date().toISOString() },
+          ...prev,
+        ]);
+      },
+
+      updateSettings(patch) {
+        setSettings((prev) => ({ ...prev, ...patch }));
+      },
+    };
+  }, [tasks, habits, notes, settings]);
 
   return <PlannerContext.Provider value={value}>{children}</PlannerContext.Provider>;
 }
