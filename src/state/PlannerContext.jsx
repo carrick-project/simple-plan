@@ -67,6 +67,16 @@ export function PlannerProvider({ userId, children }) {
   const [notes, setNotes] = useState([]);
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const hydrated = useRef(false);
+  const applyingRemote = useRef(false);
+
+  // Apply a freshly-fetched row without immediately re-uploading it.
+  function applyRemote(data) {
+    applyingRemote.current = true;
+    setTasks(data.tasks);
+    setHabits(data.habits);
+    setNotes(data.notes);
+    setSettings(data.settings);
+  }
 
   // Load this user's planner row on sign-in; seed one if they're new.
   useEffect(() => {
@@ -84,17 +94,11 @@ export function PlannerProvider({ userId, children }) {
       if (cancelled) return;
 
       if (!error && data) {
-        setTasks(data.tasks);
-        setHabits(data.habits);
-        setNotes(data.notes);
-        setSettings(data.settings);
+        applyRemote(data);
       } else {
         const seeded = { tasks: seedTasks(), habits: seedHabits(), notes: seedNotes(), settings: DEFAULT_SETTINGS };
         await supabase.from('planner_state').insert({ user_id: userId, ...seeded });
-        setTasks(seeded.tasks);
-        setHabits(seeded.habits);
-        setNotes(seeded.notes);
-        setSettings(seeded.settings);
+        applyRemote(seeded);
       }
       hydrated.current = true;
       setLoading(false);
@@ -104,9 +108,34 @@ export function PlannerProvider({ userId, children }) {
     return () => { cancelled = true; };
   }, [userId]);
 
+  // Re-pull the latest whenever the app regains focus, so a change made on
+  // another device shows up without fully closing and reopening the app.
+  useEffect(() => {
+    async function refresh() {
+      if (document.visibilityState !== 'visible' || !hydrated.current) return;
+      const { data, error } = await supabase
+        .from('planner_state')
+        .select('tasks, habits, notes, settings')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (!error && data) applyRemote(data);
+    }
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      window.removeEventListener('focus', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+    };
+  }, [userId]);
+
   // Push any change back up, a moment after it happens.
   useEffect(() => {
     if (!hydrated.current) return;
+    if (applyingRemote.current) {
+      // This change came from a remote fetch, not a user edit — don't echo it back.
+      applyingRemote.current = false;
+      return;
+    }
     const timeout = setTimeout(() => {
       supabase
         .from('planner_state')
