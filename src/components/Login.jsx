@@ -15,19 +15,26 @@ export default function Login() {
     setNotice('');
     setSubmitting(true);
 
-    const fn = mode === 'signup' ? supabase.auth.signUp : supabase.auth.signInWithPassword;
-    const { data, error } = await fn({ email, password });
-    setSubmitting(false);
+    try {
+      const { data, error } =
+        mode === 'signup'
+          ? await supabase.auth.signUp({ email, password })
+          : await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      setError(error.message);
-      return;
-    }
-    // On successful sign-in, App's auth listener takes over automatically.
-    // On sign-up, if email confirmation is on, there's no session yet.
-    if (mode === 'signup' && !data.session) {
-      setNotice('Account created. If asked, confirm via the email we sent, then sign in.');
-      setMode('signin');
+      if (error) {
+        setError(error.message);
+        return;
+      }
+      // On successful sign-in, App's auth listener takes over automatically.
+      // On sign-up, if email confirmation is on, there's no session yet.
+      if (mode === 'signup' && !data.session) {
+        setNotice('Account created. If asked, confirm via the email we sent, then sign in.');
+        setMode('signin');
+      }
+    } catch (err) {
+      setError(err?.message || 'Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   }
 
