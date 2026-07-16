@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { supabase, isSupabaseConfigured } from './lib/supabaseClient';
+import Login from './components/Login';
 import { PlannerProvider } from './state/PlannerContext';
 import BottomNav from './components/BottomNav';
 import Today from './screens/Today';
@@ -17,13 +19,36 @@ const SCREENS = {
 };
 
 export default function App() {
+  const [session, setSession] = useState(undefined); // undefined = still checking
   const [screen, setScreen] = useState('today');
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="app-shell">
+        <main className="app-main" style={{ paddingTop: 48 }}>
+          <p>Sync isn't set up yet — add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (see .env.example).</p>
+        </main>
+      </div>
+    );
+  }
+
+  if (session === undefined) return null;
+  if (!session) return <Login />;
 
   const Screen = SCREENS[screen];
 
   return (
-    <PlannerProvider>
+    <PlannerProvider userId={session.user.id}>
       <div className="app-shell">
         {settingsOpen ? (
           <Settings onBack={() => setSettingsOpen(false)} />

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import { usePlanner } from '../state/PlannerContext';
+import { supabase } from '../lib/supabaseClient';
 
 export default function Settings({ onBack }) {
   const { settings, updateSettings, tasks, habits, notes } = usePlanner();
@@ -90,6 +91,13 @@ export default function Settings({ onBack }) {
           <span>Export data</span>
           <button type="button" className="btn btn-ghost" onClick={exportData}>
             <Download size={14} />
+          </button>
+        </div>
+
+        <div className="settings-row">
+          <span>Account</span>
+          <button type="button" className="btn btn-ghost" onClick={() => supabase.auth.signOut()}>
+            Sign out
           </button>
         </div>
       </main>
