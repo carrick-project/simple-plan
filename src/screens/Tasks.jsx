@@ -1,33 +1,37 @@
-import React, { useMemo, useState } from 'react';
-import { usePlanner, DAYS, todayDayIndex, orderedDays } from '../state/PlannerContext';
+import React, { useState } from 'react';
+import {
+  usePlanner,
+  DAYS,
+  todayDayIndex,
+  orderedDays,
+  sortByPriority,
+  PRIORITIES,
+  PRIORITY_LABELS,
+} from '../state/PlannerContext';
 import Checkbox from '../components/Checkbox';
 import AddRow from '../components/AddRow';
 
-const CATEGORIES = ['Work', 'Personal', 'Errands'];
+const WEEKEND = new Set(['Sat', 'Sun']);
+const dayClass = (day) => (WEEKEND.has(day) ? 'weekend' : 'weekday');
 
 export default function Tasks() {
-  const { tasks, settings, toggleTask, addTask } = usePlanner();
+  const { tasks, settings, toggleTask, addTask, moveTask } = usePlanner();
   const days = orderedDays(settings.weekStart);
   const [activeDay, setActiveDay] = useState(DAYS[todayDayIndex()]);
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [description, setDescription] = useState('');
+  const [priority, setPriority] = useState('medium');
   const [time, setTime] = useState('');
 
-  const dayTasks = tasks.filter((t) => t.day === activeDay);
-  const grouped = useMemo(() => {
-    const byCategory = new Map();
-    for (const t of dayTasks) {
-      if (!byCategory.has(t.category)) byCategory.set(t.category, []);
-      byCategory.get(t.category).push(t);
-    }
-    return byCategory;
-  }, [dayTasks]);
+  const dayTasks = sortByPriority(tasks.filter((t) => t.day === activeDay));
 
   function submit(e) {
     e.preventDefault();
-    addTask({ title, category, day: activeDay, time });
+    addTask({ title, description, priority, day: activeDay, time });
     setTitle('');
+    setDescription('');
+    setPriority('medium');
     setTime('');
     setAdding(false);
   }
@@ -43,7 +47,7 @@ export default function Tasks() {
             <button
               key={day}
               type="button"
-              className={`day-chip${day === activeDay ? ' active' : ''}`}
+              className={`day-chip ${dayClass(day)}${day === activeDay ? ' active' : ''}`}
               onClick={() => setActiveDay(day)}
             >
               {day}
@@ -51,22 +55,43 @@ export default function Tasks() {
           ))}
         </div>
 
-        {grouped.size === 0 && <p className="empty-state">No tasks for {activeDay}.</p>}
+        {dayTasks.length === 0 && <p className="empty-state">No tasks for {activeDay}.</p>}
 
-        {[...grouped.entries()].map(([cat, catTasks]) => (
-          <section className="section" key={cat}>
-            <h2 className="section-label">{cat}</h2>
-            <div>
-              {catTasks.map((t) => (
-                <div className="row" key={t.id}>
-                  <Checkbox checked={t.done} onClick={() => toggleTask(t.id)} label={t.title} />
+        <div>
+          {dayTasks.map((t) => (
+            <div className="row task-row" key={t.id}>
+              <Checkbox checked={t.done} onClick={() => toggleTask(t.id)} label={t.title} />
+              <div className="task-main">
+                <div className="task-line">
                   <span className={`row-title${t.done ? ' done' : ''}`}>{t.title}</span>
+                  <span className={`tag priority-${t.priority || 'medium'}`}>
+                    {PRIORITY_LABELS[t.priority] || 'Medium'}
+                  </span>
+                  {t.delayed && (
+                    <span className="tag tag-delayed">
+                      delayed{t.delayedFrom ? ` from ${t.delayedFrom}` : ''}
+                    </span>
+                  )}
                   {t.time && <span className="tag tag-neutral">{t.time}</span>}
                 </div>
-              ))}
+                {t.description && <div className="task-desc">{t.description}</div>}
+              </div>
+              <select
+                className="task-move"
+                value=""
+                aria-label={`Move ${t.title} to another day`}
+                onChange={(e) => {
+                  if (e.target.value) moveTask(t.id, e.target.value);
+                }}
+              >
+                <option value="">Move…</option>
+                {DAYS.filter((d) => d !== t.day).map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
             </div>
-          </section>
-        ))}
+          ))}
+        </div>
 
         {!adding && <AddRow label="Add task" onClick={() => setAdding(true)} />}
 
@@ -84,9 +109,20 @@ export default function Tasks() {
               />
             </div>
             <div className="field">
-              <label htmlFor="task-category">Category</label>
-              <select id="task-category" className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
-                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              <label htmlFor="task-desc">Notes (optional)</label>
+              <textarea
+                id="task-desc"
+                className="input"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Any details, links, or context"
+                rows={2}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="task-priority">Priority</label>
+              <select id="task-priority" className="input" value={priority} onChange={(e) => setPriority(e.target.value)}>
+                {PRIORITIES.map((p) => <option key={p} value={p}>{PRIORITY_LABELS[p]}</option>)}
               </select>
             </div>
             <div className="field">

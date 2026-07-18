@@ -28,13 +28,41 @@ export function formatLongDate(date) {
   return new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' }).format(date);
 }
 
+export const PRIORITIES = ['high', 'medium', 'low'];
+export const PRIORITY_LABELS = { high: 'High', medium: 'Medium', low: 'Low' };
+const PRIORITY_RANK = { high: 0, medium: 1, low: 2 };
+
+// "2:00 PM" -> minutes since midnight, for tie-breaking same-priority tasks.
+function timeToMinutes(time) {
+  if (!time) return Infinity;
+  const m = /^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i.exec(time.trim());
+  if (!m) return Infinity;
+  let hour = Number(m[1]) % 12;
+  if (m[3] && m[3].toUpperCase() === 'PM') hour += 12;
+  return hour * 60 + Number(m[2]);
+}
+
+// High → Medium → Low, then earlier times first, keeping original order otherwise.
+export function sortByPriority(list) {
+  return list
+    .map((t, i) => [t, i])
+    .sort(([a, ai], [b, bi]) => {
+      const pr = (PRIORITY_RANK[a.priority] ?? 1) - (PRIORITY_RANK[b.priority] ?? 1);
+      if (pr !== 0) return pr;
+      const ta = timeToMinutes(a.time) - timeToMinutes(b.time);
+      if (ta !== 0 && Number.isFinite(ta)) return ta;
+      return ai - bi;
+    })
+    .map(([t]) => t);
+}
+
 function seedTasks() {
   return [
-    { id: 'task-1', title: 'Send Q3 report', category: 'Work', day: dayFromToday(0), time: '2:00 PM', done: false },
-    { id: 'task-2', title: 'Team standup', category: 'Work', day: dayFromToday(0), time: null, done: true },
-    { id: 'task-3', title: 'Book dentist', category: 'Personal', day: dayFromToday(1), time: null, done: false },
-    { id: 'task-4', title: 'Grocery run', category: 'Personal', day: dayFromToday(2), time: '6:00 PM', done: false },
-    { id: 'task-5', title: 'Pay rent', category: 'Errands', day: dayFromToday(-1), time: null, done: true },
+    { id: 'task-1', title: 'Send Q3 report', description: 'Pull the latest numbers from the shared sheet first.', priority: 'high', day: dayFromToday(0), time: '2:00 PM', done: false },
+    { id: 'task-2', title: 'Team standup', description: '', priority: 'medium', day: dayFromToday(0), time: null, done: true },
+    { id: 'task-3', title: 'Book dentist', description: '', priority: 'low', day: dayFromToday(1), time: null, done: false },
+    { id: 'task-4', title: 'Grocery run', description: 'Milk, eggs, coffee.', priority: 'medium', day: dayFromToday(2), time: '6:00 PM', done: false },
+    { id: 'task-5', title: 'Pay rent', description: '', priority: 'high', day: dayFromToday(-1), time: null, done: true },
   ];
 }
 
@@ -168,12 +196,36 @@ export function PlannerProvider({ userId, children }) {
       toggleTask(id) {
         setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
       },
-      addTask({ title, category, day, time }) {
+      addTask({ title, description, priority, day, time }) {
         if (!title.trim()) return;
         setTasks((prev) => [
           ...prev,
-          { id: `task-${Date.now()}`, title: title.trim(), category: category || 'Personal', day, time: time || null, done: false },
+          {
+            id: `task-${Date.now()}`,
+            title: title.trim(),
+            description: (description || '').trim(),
+            priority: priority || 'medium',
+            day,
+            time: time || null,
+            done: false,
+            delayed: false,
+            delayedFrom: null,
+          },
         ]);
+      },
+      // Move a task to another day. Moving an unfinished task marks it delayed,
+      // remembering where it first slipped from.
+      moveTask(id, newDay) {
+        setTasks((prev) => prev.map((t) => {
+          if (t.id !== id || t.day === newDay) return t;
+          const nowDelayed = !t.done;
+          return {
+            ...t,
+            day: newDay,
+            delayed: nowDelayed || t.delayed,
+            delayedFrom: nowDelayed && !t.delayed ? t.day : t.delayedFrom,
+          };
+        }));
       },
 
       toggleHabitDay,

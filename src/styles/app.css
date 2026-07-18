@@ -185,6 +185,40 @@ body {
 .day-chip:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
 .day-chip.active { background: var(--color-text); border-color: var(--color-text); color: var(--color-bg); }
 
+/* weekday = blue, weekend = green; selected day fills with its own colour */
+.day-chip.weekday { color: var(--color-weekday); border-color: color-mix(in srgb, var(--color-weekday) 45%, transparent); }
+.day-chip.weekend { color: var(--color-weekend); border-color: color-mix(in srgb, var(--color-weekend) 45%, transparent); }
+.day-chip.weekday.active { background: var(--color-weekday); border-color: var(--color-weekday); color: #fff; }
+.day-chip.weekend.active { background: var(--color-weekend); border-color: var(--color-weekend); color: #fff; }
+
+/* — task rows (Tasks screen) — */
+.task-row { align-items: flex-start; }
+.task-main { flex: 1; min-width: 0; }
+.task-line { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.task-desc {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  margin-top: 2px;
+  white-space: pre-wrap;
+}
+.task-move {
+  flex: none;
+  font-family: var(--font-body);
+  font-size: 11px;
+  padding: 3px 4px;
+  border: 1px solid var(--color-divider);
+  background: transparent;
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+  cursor: pointer;
+  align-self: center;
+}
+
+/* — priority tags — */
+.tag.priority-high { background: var(--color-accent-100); color: var(--color-accent-800); }
+.tag.priority-medium { background: #fdefcf; color: #7a5300; }
+.tag.priority-low { background: var(--color-neutral-200); color: var(--color-neutral-700); }
+.tag.tag-delayed { background: #fde2df; color: var(--color-accent-800); }
+
 /* — dashed add row — */
 .add-row {
   margin-top: var(--space-4);

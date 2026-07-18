@@ -1,6 +1,6 @@
 import React from 'react';
 import { Settings as SettingsIcon } from 'lucide-react';
-import { usePlanner, DAYS, todayDayIndex, formatLongDate } from '../state/PlannerContext';
+import { usePlanner, DAYS, todayDayIndex, formatLongDate, sortByPriority, PRIORITY_LABELS } from '../state/PlannerContext';
 import Checkbox from '../components/Checkbox';
 
 export default function Today({ onOpenSettings }) {
@@ -8,7 +8,7 @@ export default function Today({ onOpenSettings }) {
   const todayIdx = todayDayIndex();
   const todayName = DAYS[todayIdx];
 
-  const todaysTasks = tasks.filter((t) => t.day === todayName);
+  const todaysTasks = sortByPriority(tasks.filter((t) => t.day === todayName));
   const tasksLeft = todaysTasks.filter((t) => !t.done).length;
   const habitsLeft = habits.filter((h) => !h.log[todayIdx]).length;
 
@@ -47,6 +47,9 @@ export default function Today({ onOpenSettings }) {
               <div className="row" key={t.id}>
                 <Checkbox checked={t.done} onClick={() => toggleTask(t.id)} label={t.title} />
                 <span className={`row-title${t.done ? ' done' : ''}`}>{t.title}</span>
+                <span className={`tag priority-${t.priority || 'medium'}`}>
+                  {PRIORITY_LABELS[t.priority] || 'Medium'}
+                </span>
                 {t.time && <span className="tag tag-neutral">{t.time}</span>}
               </div>
             ))}
